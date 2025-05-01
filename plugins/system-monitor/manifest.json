@@ -4,6 +4,7 @@
   "permissions": {
     "env": true,
     "sys": true,
-    "read": ["/proc/meminfo"]
+    "read": true,
+    "run": true
   }
 }
