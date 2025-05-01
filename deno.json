@@ -1,0 +1,15 @@
+{
+  "nodeModulesDir": "auto",
+  "tasks": {
+    "dev": "env DENO_TRACE_PERMISSIONS=1 deno run -A --unstable-worker-options --watch main.ts",
+    "start": "deno run -A --unstable-worker-options --no-prompt main.ts",
+    "build:win": "deno compile --target x86_64-pc-windows-msvc -A --unstable-worker-options --include runner --no-check main.ts",
+    "rollup:shared-models": "rollup -c models/shared/rollup.config.js"
+  },
+  "imports": {
+    "@std/path": "jsr:@std/path@^1.0.9",
+    "rollup": "npm:rollup@^4.40.0",
+    "rollup-plugin-dts": "npm:rollup-plugin-dts@^6.2.1",
+    "systeminformation": "npm:systeminformation@^5.25.11"
+  }
+}
