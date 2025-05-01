@@ -5,6 +5,9 @@ const plugins: Record<string, Worker> = {};
 export function loadPlugin(entrypoint: string, manifest: PluginManifest) {
   if (plugins[manifest.name] !== undefined)
     throw new Error(`Plugin ${manifest.name} already loaded.`);
+  if (entrypoint.match(/^file:\/\/.*?\.ts$/) === null)
+    throw new Error(`Invalid entrypoint: ${entrypoint}`);
+  const entrypointPath = entrypoint.replace(/^file:\/\//, "");
 
   const permissions = {
     read: false,
@@ -19,8 +22,8 @@ export function loadPlugin(entrypoint: string, manifest: PluginManifest) {
   } satisfies Required<Deno.PermissionOptionsObject>;
   if (permissions.read !== true) {
     permissions.read = Array.isArray(permissions.read)
-      ? [...permissions.read, entrypoint]
-      : [entrypoint];
+      ? [...permissions.read, entrypointPath]
+      : [entrypointPath];
   }
 
   const worker = new Worker(import.meta.resolve("../runner/index.ts"), {

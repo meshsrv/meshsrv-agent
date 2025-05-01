@@ -30,11 +30,12 @@ for await (const dir of Deno.readDir("plugins")) {
   console.log(`Loading plugin ${manifest.name}@${manifest.version} ...`);
 
   (await tryLoadPlugin(
-    join(import.meta.dirname!, `./plugins/${dir.name}/main.ts`),
+    "file://" + join(import.meta.dirname!, `./plugins/${dir.name}/main.ts`),
     manifest
   )) ||
     (await tryLoadPlugin(
-      join(dirname(Deno.execPath()), `./plugins/${dir.name}/main.ts`),
+      "file://" +
+        join(dirname(Deno.execPath()), `./plugins/${dir.name}/main.ts`),
       manifest
     ));
 }
@@ -45,7 +46,7 @@ async function tryLoadPlugin(
 ): Promise<boolean> {
   console.log(`Trying to load plugin from ${path} ...`);
   try {
-    await Deno.lstat(path);
+    await Deno.lstat(path.replace(/^file:\/\//, ""));
     loadPlugin(path, manifest);
   } catch (err) {
     if (!(err instanceof Deno.errors.NotFound)) throw err;
